@@ -1,0 +1,24 @@
+{
+  "name": "fragment-include",
+  "description": "Wash your files with this preprocessor and then DRY",
+  "keywords": ["water","fragment", "include", "fipp", "file", "preprocessor"],
+  "version": "0.0.1",
+  "engines": {
+    "node": "*"
+  },
+  "author": {
+    "name": "Adam Griffiths",
+    "url": "https://github.com/aogriffiths"
+  },
+  "homepage": "https://github.com/aogriffiths/node-wtr-fragment-include",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aogriffiths/node-wtr-fragment-include.git"
+  },
+  "bin": {
+    "fipp": "./bin/fipp"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {}
+}

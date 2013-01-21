@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+/**
+ * @Author Adam Griffiths
+ * @description [Node water](https://github.com/aogriffiths/node-wtr) to 
+ *              Wash your files ... and then DRY. 
+ *              On [github.com](https://github.com/aogriffiths/node-wtr-fragment-include)
+ *              On [npmjs.org](https://npmjs.org/package/fragment-include)
+ * 
+ */
+
+/***  ***/ sd
