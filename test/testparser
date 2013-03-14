@@ -1,0 +1,7 @@
+Aa1
+<!---fragment.include src="a"/--->
+def
+<!---fragment.include src="b" thing="c"--->
+bog
+<!---/fragment.include--->
+ghi
