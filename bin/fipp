@@ -9,4 +9,127 @@
  * 
  */
 
-/***  ***/ sd
+//FUNCTIONS AND NAMESPACES
+var program = require('commander');
+var pkg     = require('../package.json');
+var path    = require("path");
+var lazy    = require('lazy-functions');
+var fs      = require('fs');
+lazy.pullkeywordsinto(global);
+
+
+//END FUNCTIONS AND NAMESPACES
+//-----------------------------------------------------------
+//GLOBALS
+
+var __verbose__ = false;
+var __debug__ = false;
+
+var __comments__ = {
+    js: {start: '/***', end: '***/'}
+    md: {start: '<!---', end: '--->'}
+}
+
+//END GLOBALS
+//-----------------------------------------------------------
+//THE COMMAND LINE INTERFACE
+
+//guess the command from the process args (same logic as commander uses to guess the name)
+var name = path.basename(process.argv[1]);
+
+program
+.version(pkg.version)
+.option('--debug',            'output debug information (even more than verbose)');
+
+program.on('--help', function(){
+var msg = [];
+msg.push('');
+console.log(msg.join("\n"));
+});
+
+program
+.parse(process.argv);
+
+__debug__ = program.debug;
+__verbose__ = program.verbose;
+
+//END THE COMMAND LINE INTERFACE
+//-----------------------------------------------------------
+//THE MAIN PROGRAMME
+
+function main(){
+  lazy.river(
+     Call(targetNames).resultin('targetNames'),
+     Then(parseTargets).withargs('targetNames').resultin('parsedTargets'),
+     Then(parseSources).withargs('parsedTargets').resultin('parsedSources'),
+     Finally(wrapThingsUp)
+  );
+}
+
+function targetNames(callback){
+  callback(null, program.args);
+}
+
+function parseTargets(targetNames, callback){
+  lazy.async.map(targetNames, parseTarget, callback)
+}
+
+function parseSources(parsedTarget, callback){
+  var data = ''
+  callback(null, data);
+}
+
+function wrapThingsUp(err, data){
+  if(err){
+    console.log("Error:", err);
+    
+  }
+  console.log(data);
+}
+
+//END MAIN PROGRAMME
+//-----------------------------------------------------------
+//parseTarget
+
+function parseTarget(fileName, callback){
+  lazy.river(
+      Push(fileName).into('fileName'),
+      Call(readFile).withargs('fileName').resultin('fileContents'),
+      Call(splitLines).withargs('fileContents').resultin('fileLines'),
+      Call(parseFile).withargs('fileName','fileLines').resultin('parsedFile'),
+      Finally(callback)
+   );
+}
+
+function readFile(fileName, callback){
+  fs.readFile(fileName, 'utf8', callback);
+}
+
+function splitLines(fileContents, callback){
+  callback(null,fileContents.split("\n"));
+}
+
+function parseFile(fileName, fileContents, callback){
+  var ext = fileName.split('.').pop();
+  var comments = __comments__[ext];
+  if(!comments) return callback('unrecognised extension ' + ext);
+  var sections = [];
+  var currentsection = {};
+  currentsection.type = 'outside';
+  splitLines.forEach(function(line){
+    if(line ~ comments.start){
+      if(currentsection.type === 'outside'){
+        if(line ~ comments.start){
+          
+        }
+      }
+    }
+  });
+  
+}
+
+
+//end parseTarget
+//-----------------------------------------------------------
+
+main();

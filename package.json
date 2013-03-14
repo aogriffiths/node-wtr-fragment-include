@@ -2,7 +2,7 @@
   "name": "fragment-include",
   "description": "Wash your files with this preprocessor and DRY",
   "keywords": ["water","fragment", "include", "fipp", "file", "preprocessor"],
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "node": "*"
   },
@@ -17,6 +17,10 @@
   },
   "bin": {
     "fipp": "./bin/fipp"
+  },
+  "scripts": {
+    "makeparser":"jison parser_src/parser.md.jison -o parser/parser.md.js",
+    "makeparserjson":"jison2json parser_src/parser.md.jison > parser/parser.md.json"
   },
   "dependencies": {},
   "devDependencies": {},

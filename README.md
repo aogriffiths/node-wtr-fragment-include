@@ -36,9 +36,85 @@ use of fipp is:
 $ fipp <target>
 ```
 
-Fipp will parse the target file looking for **fragment-include\* ** instuctions which it will
+Fipp will parse the target file looking for **fragment-include** instuctions which it will
 replace with fragments from source files. Fragments in the source files are denfined
-using **fragment-define\* ** instuctions. There are five instuctions in total.
+using **fragment-start|end** instuctions. 
+
+
+Example 1
+---------
+
+file1.md:
+```md
+#Example
+Here is an example:
+<!--- fragment-include file2.js#example1 --->
+```
+
+file2.js:
+```js
+var a = 1;
+/*** fragment-start example1 ***/
+var b = 2;
+/*** fragment-end ***/
+var c = 3;
+```
+`fipp file1.md` will update file1.md to be:
+
+file1.md
+```md
+#Example
+Here is an example:
+<!--- fragment-include-start file2.js#example1 --->
+ ```js
+ var b = 2;
+ ```
+<!--- fragment-include-end --->
+```
+
+Example 2
+---------
+
+file1.md:
+```md
+#Example
+Here is an example:
+<!--- fragment-include file2.js#example1 --->
+```
+
+file2.js:
+```js
+var a = 1;
+/*** fragment-start example1 ***/
+/*** 
+ * Comments starting and ending with
+ * three asterixs are passed though 
+ * as raw text
+ ***/
+
+var b = 2;
+/*** fragment-end ***/
+var c = 3;
+```
+`fipp file1.md` will update file1.md to be:
+
+file1.md
+```md
+#Example
+Here is an example:
+<!--- fragment-include-start file2.js#example1 --->
+ Comments starting with
+ three asterixs are passed though 
+ as raw text
+ ```js
+ var b = 2;
+ ```
+<!--- fragment-include-end --->
+```
+Technical Details
+-----------------
+
+There are five instuctions in total.
 
 * **fragment-include {source}{fragmentid}** - shorthand for pair of 
   **fragment-include-start** and **fragment-include-end tags**.
@@ -58,40 +134,11 @@ Fipp uses the following logic.
 3. Extract all **{source}{fragmentid}** references from the 
    **fragment-include-start {source}{fragmentid}** instructions.
 4. Extracts the *fragments* from the source files specified by **{source}**. *Fragments* are 
-   everything between a **fragment-define-start {fragmentid}** and a 
-   **fragment-define-end** instruction.
+   everything between a **fragment-start {fragmentid}** and a 
+   **fragment-end** instruction.
 5. Inserts the *fragments* extracted from source files into the *include regions* defined 
    in the target file.
-
-Example
--------
-
-file1.md
-```md
-#Here is an example
-<!--- fragment-include file2.js#example1 --->
-```
-
-file2.js
-```js
-var a = 1;
-/*** fragment-define-start example1 ***/
-var b = 2;
-/*** fragment-define-end ***/
-var c = 3;
-```
-`fipp file1.md` will updated file1.md to be:
-
-file1.md
-```md
-#Here is an example
-<!--- fragment-include-start file2.js#example1 --->
-\`\`\`js
-var b = 2;
-\`\`\`
-<!--- fragment-include-end --->
-```
-
+   
 Comments
 --------
 
